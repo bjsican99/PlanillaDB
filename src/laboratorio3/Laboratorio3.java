@@ -12,14 +12,35 @@ import java.text.*;
 public class Laboratorio3 {  
     public static void main(String[] args) {        
         //Vectores y Matrices
+        String sUsuario = "bjsican", sContra = "123";
         double [][] dblPlanilla = new double[10][8];
         int [] intDepartamento = new int[5];
+        int iInicio;
         String [][] sNombresYDerechoPrestaciones = new String[10][2];       
         //Principal Llamado de funcione
         System.out.println("Bienvenido");
-        LlenadoDePlanilla(dblPlanilla, sNombresYDerechoPrestaciones);
-        SumaSueldoDepartamentos(dblPlanilla, intDepartamento);
-        MostrarPlanillaYVector(dblPlanilla, intDepartamento, sNombresYDerechoPrestaciones);
+        iInicio=Login(sUsuario, sContra);
+        if(iInicio == 1){
+            LlenadoDePlanilla(dblPlanilla, sNombresYDerechoPrestaciones);
+            SumaSueldoDepartamentos(dblPlanilla, intDepartamento);
+            MostrarPlanillaYVector(dblPlanilla, intDepartamento, sNombresYDerechoPrestaciones);
+        }      
+    }
+    
+    public static int Login(String sUser, String sContra){
+        Scanner scngua = new Scanner(System.in);
+        String suser, pass;
+        System.out.println("Ingreso Usuario: ");
+        suser = scngua.nextLine();
+        System.out.println("Ingreso Contraseña: ");
+        pass = scngua.nextLine();
+        if(suser.equals(sUser) && pass.equals(sContra)){
+            System.out.println("Bienvenido");
+            return 1;
+        }else{
+            System.out.println("Usuario no existente");
+            return 0;
+        }
     }
     
     public static void LlenadoDePlanilla(double[][] dblPlani, String[][] sNombresDerecho){
