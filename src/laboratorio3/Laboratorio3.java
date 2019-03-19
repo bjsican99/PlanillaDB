@@ -1,6 +1,7 @@
 package laboratorio3;
 import java.util.*;
 import java.text.*;
+import javax.swing.JOptionPane;
 /**
  *Software tipo planilla, para calculo de sueldo liquido, con uso de vectores y matrices.
  * Adicion con calculo de IGSS e ISR dependiendo de un rango de salario.
@@ -11,36 +12,71 @@ import java.text.*;
  */
 public class Laboratorio3 {  
     public static void main(String[] args) {        
-        //Vectores y Matrices
-        String sUsuario = "bjsican", sContra = "123";
-        double [][] dblPlanilla = new double[10][8];
-        int [] intDepartamento = new int[5];
-        int iInicio;
-        String [][] sNombresYDerechoPrestaciones = new String[10][2];       
+        //Vectores y Matrices        
+        int iInicio; 
         //Principal Llamado de funcione
         System.out.println("Bienvenido");
-        iInicio=Login(sUsuario, sContra);
-        if(iInicio == 1){
-            LlenadoDePlanilla(dblPlanilla, sNombresYDerechoPrestaciones);
-            SumaSueldoDepartamentos(dblPlanilla, intDepartamento);
-            MostrarPlanillaYVector(dblPlanilla, intDepartamento, sNombresYDerechoPrestaciones);
-        }      
+        do{
+           iInicio=Login();
+            switch(iInicio){
+                case 1:{
+                   SecionIniciada();
+                   iInicio = CerrarSesion();
+                break;}
+            }       
+        }while(iInicio !=2);
+        System.out.println("Sesion Cerrada");
     }
     
-    public static int Login(String sUser, String sContra){
+    //Metodo al momento de iniciar sesion
+    //Llamada de todas las fucniones para llenar la matriz de forma estatica.
+    
+    public static void SecionIniciada(){
+        double [][] dblPlanilla = new double[10][8];
+        int [] intDepartamento = new int[5];
+        String [][] sNombresYDerechoPrestaciones = new String[10][2];   
+        System.out.println("Sesión Iniciada");
+        LlenadoDePlanilla(dblPlanilla, sNombresYDerechoPrestaciones);
+        SumaSueldoDepartamentos(dblPlanilla, intDepartamento);
+        MostrarPlanillaYVector(dblPlanilla, intDepartamento, sNombresYDerechoPrestaciones);  
+    }
+    
+    //Metodo Para ingreso con pedida de usuario y contraseña
+    public static int Login(){
+        String sUser = "bjsican", sContra = "123";     
         Scanner scngua = new Scanner(System.in);
         String suser, pass;
-        System.out.println("Ingreso Usuario: ");
+        System.out.println("\nIngreso Usuario: ");
         suser = scngua.nextLine();
         System.out.println("Ingreso Contraseña: ");
         pass = scngua.nextLine();
         if(suser.equals(sUser) && pass.equals(sContra)){
-            System.out.println("Bienvenido");
+            System.out.println("Bienvenido\n");
             return 1;
         }else{
-            System.out.println("Usuario no existente");
+            System.out.println("Usuario no existente\n");
             return 0;
         }
+    }
+    
+    //Funcion para Cerrar Sesión
+    public static int CerrarSesion(){
+        Scanner scngua = new Scanner(System.in);
+        String sCerrarSesion; int iOpcion =0;
+        do{
+            System.out.println("Decea Cerrar Sesión?\nS/N:\t");
+            sCerrarSesion = scngua.nextLine();
+            if(sCerrarSesion.equals("s") || sCerrarSesion.equals("S")){
+                return 2;
+            }else if(sCerrarSesion.equals("n") || sCerrarSesion.equals("N")){
+                return 1;
+            }else{
+                System.out.println("Error al escribir la respuesta");
+            }
+        }while(iOpcion !=2);
+ 
+        
+        return 2;
     }
     
     public static void LlenadoDePlanilla(double[][] dblPlani, String[][] sNombresDerecho){
@@ -51,6 +87,7 @@ public class Laboratorio3 {
             sNombresDerecho[ifila][0] = scngua.nextLine();//Nombres En la matriz
             System.out.println("Calculo a "+sNombresDerecho[ifila][0]+" algun impuesto:\nSI/NO");
             sNombresDerecho[ifila][1] = scngua.nextLine();//Derecho a Prestaciones y Deducciones
+            
             //Llenado de Salarios, Deducciones y Prestaciones
             dblPlani[ifila][0] = ifila;   
             SalariosDeduccionesPrestaciones(dblPlani, ifila, sNombresDerecho); 
@@ -67,9 +104,9 @@ public class Laboratorio3 {
         Random rDepartamento = new Random();
         //Llenado
         dblPlani[ifila][1] = rSueldoBase.nextInt(97500)+2501;
-        dblPlani[ifila][7] = rDepartamento.nextInt(5)+1;     
         dblPlani[ifila][2] = rDeducciones.nextInt(500)+100;
         dblPlani[ifila][3] = rPersepciones.nextInt(500)+250;
+        dblPlani[ifila][7] = rDepartamento.nextInt(5)+1;             
         //Verificacion de se le calcula IGSS E ISR
         if(strDerecho.equals("SI") || strDerecho.equals("S")){            
             dblPlani[ifila][4] = CalculoIGSS(dblPlani, ifila);
@@ -82,6 +119,7 @@ public class Laboratorio3 {
     public static double CalculoIGSS(double [][] dblPlanilla, int ifila){                
         return dblPlanilla[ifila][4] = dblPlanilla[ifila][1] * 0.1067;//IGSS   
     }
+    
     //Funcion del calculo ISR
     public static double CalculoISR(double [][] dblPlanilla, int ifila){
         double [][] dblISR = {{2500,5000,3},{5001,10000,5},{10001,100001,10}};//Matriz del porcentaje al ISR
@@ -92,10 +130,12 @@ public class Laboratorio3 {
         }
         return dblPlanilla[ifila][5];
     }
+    
     //Funcion suma y resta los todas las bonificacion y deducciones
     public static double SumaSueldoLiquido(double [][] dblPlanilla, int ifila){
         return dblPlanilla[ifila][6] = dblPlanilla[ifila][1]-dblPlanilla[ifila][2]+dblPlanilla[ifila][3]-dblPlanilla[ifila][4]-dblPlanilla[ifila][5];//Sueldo Liquido 
     }
+    
     //Guarda todos los elementos en el vector dependiendo del departamento al que pertenece
     public static void SumaSueldoDepartamentos(double[][] dblPlani, int[] intDepar){
         int iAuxConteo=1;
@@ -108,6 +148,7 @@ public class Laboratorio3 {
             iAuxConteo++;
         }
     }
+    
     //Imprime en pantalla todos los resultados de la matriz y del vector
     public static void MostrarPlanillaYVector(double[][] dblPlani, int[] intDepar, String[][] sNombresVec){
         int iconteoaux=1;
