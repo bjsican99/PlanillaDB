@@ -4,7 +4,7 @@ import java.sql.*;
 /**Clase para:
  * Iniciar Sesion: con usuario y contraseña almacenado en una BD.
  * y asi tambien la opcion de cerrar sesion.
- * 
+ * contiene la matriz y vectores principales a utilizar.
  * @author Billy Sican
  */
 public class IniciarCerrar {
@@ -21,8 +21,8 @@ public class IniciarCerrar {
         sContra = scngua.nextLine();
         //busqueda
         try{
-            con.conect = DriverManager.getConnection("jdbc:mysql://localhost:3306/dbplanilla","root","1234");
-            PreparedStatement pst = con.conect.prepareStatement("select * from dbplanilla.usuarios where nombre_usuario = ?");
+            Connection conect = DriverManager.getConnection("jdbc:mysql://localhost:3306/dbplanilla","root","1234");
+            PreparedStatement pst = conect.prepareStatement("select * from usuarios where nombre_usuario = ?");
             pst.setString(1, sUser.trim());
             ResultSet rs = pst.executeQuery();
 
@@ -42,13 +42,18 @@ public class IniciarCerrar {
     //Metodo al momento de iniciar sesion
     //Llamada de todas las fucniones para llenar la matriz de forma estatica.   
     public static void SesionIniciada(){
-        double [][] dblPlanilla = new double[5][8];
-        int [] intDepartamento = new int[5];
-        String [][] sNombresYDerechoPrestaciones = new String[5][2];   
+        //vectores y matrices principales
+        String [][] sDepartamento = new String [5][2];
+        String [][] sPuesto = new String [5][2];
+        double [] dblDepartamento = new double[6];
+        int [][] intInfo = new int [5][4];
+        double [][] dblPlanilla = new double[6][7];
+        
+        String [][] sNombres = new String[5][2]; 
+             
         //llamado de metos de la clase LlenadoyCalculoPlanilla
-        LlenadoyCalculoPlanilla.LlenadoDePlanilla(dblPlanilla, sNombresYDerechoPrestaciones);
-        LlenadoyCalculoPlanilla.SumaSueldoDepartamentos(dblPlanilla, intDepartamento);
-        Laboratorio3.MostrarPlanillaYVector(dblPlanilla, intDepartamento, sNombresYDerechoPrestaciones);  
+        LlenadoyCalculoPlanilla.LlenadoDePlanilla(intInfo, dblPlanilla, sNombres, dblDepartamento);
+        Laboratorio3.MostrarPlanillaYVector(dblPlanilla, dblDepartamento, sNombres);  
     }
     
     //Funcion para Cerrar Sesión

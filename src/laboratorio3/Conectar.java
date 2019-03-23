@@ -7,13 +7,12 @@ import javax.swing.*;
  */
 public class Conectar {
     //variables que contendran las especificaciones para la coneccion.
-    private String sDriver = "com.mysql.jdbc.Driver";
-    private String sCadenaConeccion = "jdbc:mysql://localhost:3306/dbplanilla";
-    private String sUsuario = "root";
-    private String sContraseña = "1234"; 
-    public Connection conect;
-    
-    public Conectar(){
+    public static Connection conect;
+    public static void Conectar(){
+        String sDriver = "com.mysql.jdbc.Driver";
+        String sCadenaConeccion = "jdbc:mysql://localhost:3306/dbplanilla";
+        String sUsuario = "root";
+        String sContraseña = ""; 
         try {
             Class.forName(sDriver);
             conect = DriverManager.getConnection(sCadenaConeccion, sUsuario, sContraseña);
